@@ -13,4 +13,19 @@ connect.getConnection((err)=>{
 
 const app = express();
 
+app.use(express.json());
+app.use(express.urlencoded({extended:true}));
+
+app.use('/api',require("./routes/blog"));
+
+app.use((err,req,res,next)=>{
+     if(err){
+         res.json({error:err.message});
+     }
+     else{
+         console.log(req.body)
+          next();
+     }
+});
+
 app.listen(3000,()=>console.log("server run at 3000"))
