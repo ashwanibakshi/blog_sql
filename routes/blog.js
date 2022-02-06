@@ -83,15 +83,6 @@ router.post('/blog/add',(req,res,next)=>{
                        next(err);
                   }
                   else if(result.affectedRows>0){
-                    // var sql2 = "select * from blogs";
-                    // connection.query(sql2,(err,resultt)=>{
-                    //    if(err){
-                    //        next(err);
-                    //    }
-                    //    else{
-                    //        res.json({data:resultt});
-                    //    }
-                    // });
                     var sql2 = 'select email from author'
                     connection.getConnection(sql2,(err,resultt)=>{
                          if(err){
@@ -99,7 +90,7 @@ router.post('/blog/add',(req,res,next)=>{
                          }
                          else{
                             var mailList = [];
-            resultt.forEach(function(users){
+            resultt.forEach(function(users){            //nodemailer
                 mailList.push(users.email);
                 return mailList;
             });
