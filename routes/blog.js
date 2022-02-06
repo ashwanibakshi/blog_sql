@@ -41,9 +41,9 @@ router.post('/author/add',(req,res,next)=>{
     }
 });
 
-router.post('/add',(req,res,next)=>{
+router.post('/blog/add',(req,res,next)=>{
     try {
-        console.log("data",req.body)
+       
         let data = {
             title      : req.body.title,
             description: req.body.description, 
@@ -80,6 +80,24 @@ router.post('/add',(req,res,next)=>{
      } catch (error) {
         next(error);
     }
+});
+
+router.get('/blog/:id',(req,res,next)=>{
+     try {
+        connect.getConnection((err,connection)=>{
+             var sql = "select * from blogs where id = "+req.params.id;
+             connection.query(sql,(err,result)=>{
+                   if(err){
+                       next(err);
+                   }
+                   else{
+                       res.json({data:result})
+                   }
+             }); 
+        });    
+     } catch (error) {
+         next(error);
+     }
 });
 
 router.get('/showall',(req,res,next)=>{
