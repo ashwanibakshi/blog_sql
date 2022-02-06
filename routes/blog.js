@@ -41,6 +41,29 @@ router.post('/author/add',(req,res,next)=>{
     }
 });
 
+router.get('/author/:id',(req,res,next)=>{
+    try {
+        connect.getConnection((err,connection)=>{
+            if(err){
+               next(err);
+            }
+            else{
+              connection.query("select * from author join blogs on author.id = blogs.authorid where author.id = ?",[req.params.id],(err,result)=>{
+                   if(err){
+                       next(err);
+                   }
+                   else{
+                     res.json({data:result});    
+                   }
+              });    
+            }
+            connection.release();
+        });
+    } catch (error) {
+        next(error);
+    }
+});
+
 router.post('/blog/add',(req,res,next)=>{
     try {
        
@@ -186,6 +209,7 @@ router.delete('/blog/delete/:id',(req,res,next)=>{
                      }
                   }); 
                }
+               connection.release();
          }); 
       } catch (error) {
           next(error);
