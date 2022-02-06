@@ -85,6 +85,10 @@ router.post('/blog/add',(req,res,next)=>{
 router.get('/blog/:id',(req,res,next)=>{
      try {
         connect.getConnection((err,connection)=>{
+            if(err){
+                next(err);
+            }
+            else{
              var sql = "select * from blogs where id = "+req.params.id;
              connection.query(sql,(err,result)=>{
                    if(err){
@@ -95,13 +99,14 @@ router.get('/blog/:id',(req,res,next)=>{
                    }
              });
              connection.release(); 
+            }
         });    
      } catch (error) {
          next(error);
      }
 });
 
-router.get('/blog/showall',(req,res,next)=>{
+router.get('/showallblog',(req,res,next)=>{
      connect.getConnection((err,connection)=>{
            if(err){
                next(err);
@@ -121,6 +126,36 @@ router.get('/blog/showall',(req,res,next)=>{
      });
 });
 
+router.delete('/blog/delete/:id',(req,res,next)=>{
+      try {
+         connect.getConnection((err,connection)=>{
+               if(err){
+                   next(err);
+               } 
+               else{
+                  var sql = "delete from blogs where id = "+req.params.id;
+                  connection.query(sql,(err,result)=>{
+                     if(err){
+                         next(err);
+                     } 
+                     else{
+                        var sql2 = "select * from blogs";
+                        connection.query(sql2,(err,resultt)=>{
+                            if(err){
+                                next(err);
+                            }
+                            else{
+                              res.json({data:resultt});
+                            }
+                        });
+                     }
+                  }); 
+               }
+         }); 
+      } catch (error) {
+          next(error);
+      }
+});
 
 
 module.exports = router;
