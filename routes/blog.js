@@ -83,14 +83,49 @@ router.post('/blog/add',(req,res,next)=>{
                        next(err);
                   }
                   else if(result.affectedRows>0){
-                    var sql2 = "select * from blogs";
-                    connection.query(sql2,(err,resultt)=>{
-                       if(err){
-                           next(err);
-                       }
-                       else{
-                           res.json({data:resultt});
-                       }
+                    // var sql2 = "select * from blogs";
+                    // connection.query(sql2,(err,resultt)=>{
+                    //    if(err){
+                    //        next(err);
+                    //    }
+                    //    else{
+                    //        res.json({data:resultt});
+                    //    }
+                    // });
+                    var sql2 = 'select email from author'
+                    connection.getConnection(sql2,(err,resultt)=>{
+                         if(err){
+                             next(err);
+                         }
+                         else{
+                            var mailList = [];
+            resultt.forEach(function(users){
+                mailList.push(users.email);
+                return mailList;
+            });
+            var smtpTransport = nodemailer.createTransport({
+                service: 'Gmail', 
+                auth: {
+                    user: 'email@email.com',
+                    pass: "password"
+                }
+            });
+            var mailOptions = {
+                    to: [],
+                    bcc: mailList,
+                    from: 'email@email.com',
+                    subject: 'new blog posted',
+                    text: req.body.title
+                };
+                smtpTransport.sendMail(mailOptions, function(err) {
+                    if(err){
+                        next(err);
+                    }
+                    else{
+                       res.json({data:"post successfully added"});
+                    }
+                });     
+                         }
                     });
                   }
                   else{
