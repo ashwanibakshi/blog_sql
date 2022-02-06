@@ -93,20 +93,21 @@ router.get('/blog/:id',(req,res,next)=>{
                    else{
                        res.json({data:result})
                    }
-             }); 
+             });
+             connection.release(); 
         });    
      } catch (error) {
          next(error);
      }
 });
 
-router.get('/showall',(req,res,next)=>{
+router.get('/blog/showall',(req,res,next)=>{
      connect.getConnection((err,connection)=>{
            if(err){
                next(err);
            }
            else{
-             var sql = "select * from blogs order by id desc LIMIT "+5
+             var sql = "select * from blogs order by id desc"
              connection.query(sql,(err,result)=>{
                  if(err){
                    next(err);
