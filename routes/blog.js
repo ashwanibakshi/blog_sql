@@ -106,24 +106,59 @@ router.get('/blog/:id',(req,res,next)=>{
      }
 });
 
+router.put('/blog/update',(req,res,next)=>{
+    try {
+         connect.getConnection((err,connection)=>{
+              if(err){
+                  next(err);
+              }
+              else{  
+            connection.query('update blogs set title=?,description=? where id=?',[req.body.title,req.body.description,req.body.id],(err,result)=>{
+                     if(err){
+                         next(err);
+                     }
+                     else{
+                        var sql = "select * from blogs where id = "+req.body.id;
+                        connection.query(sql,(err,resultt)=>{
+                          if(err){
+                              next(err);
+                          }
+                          else{
+                              res.json({data:resultt});
+                          }
+                        });
+                     }
+                });
+              }
+              connection.release();
+         });
+    } catch (error) {
+        next(error);
+    }
+});
+
 router.get('/showallblog',(req,res,next)=>{
-     connect.getConnection((err,connection)=>{
-           if(err){
-               next(err);
-           }
-           else{
-             var sql = "select * from blogs order by id desc"
-             connection.query(sql,(err,result)=>{
-                 if(err){
-                   next(err);
-                 }
-                 else{
-                     res.json({data:result});
-                 }
-             });
-             connection.release();
-           }
-     });
+    try {
+        connect.getConnection((err,connection)=>{
+            if(err){
+                next(err);
+            }
+            else{
+              var sql = "select * from blogs order by id desc"
+              connection.query(sql,(err,result)=>{
+                  if(err){
+                    next(err);
+                  }
+                  else{
+                      res.json({data:result});
+                  }
+              });
+              connection.release();
+            }
+      });    
+    } catch (error) {
+        next(error);
+    }
 });
 
 router.delete('/blog/delete/:id',(req,res,next)=>{
