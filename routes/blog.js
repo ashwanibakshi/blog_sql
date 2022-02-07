@@ -3,6 +3,7 @@ const connect = require("../config/db");
 
 const router  = express.Router();
 
+
 router.post('/author/add',(req,res,next)=>{
     try {
         connect.getConnection((err,connection)=>{
@@ -11,7 +12,7 @@ router.post('/author/add',(req,res,next)=>{
                }
                else{
                    let data = {
-                       namee : req.body.name,
+                       namee : req.body.namee,
                        email: req.body.email
                    }
                 var sql = "insert into author set"+connect.escape(data);
